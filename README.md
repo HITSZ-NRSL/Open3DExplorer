@@ -7,7 +7,7 @@ This work **Open3DExplorer** is oriented to the rapid autonomous reconstruction 
 
 Authors: [Zhihao Wang](https://github.com/nixwang), [Haoyao Chen](https://github.com/HitszChen) from the [Networked RObotics and Sytems Lab](http://www.nrs-lab.com), and Mengmeng Fu.
 
-If you use **Open3DExplorer** for your academic research, please cite the following paper [[pdf](https://ieeexplore.ieee.org/document/10129820)]. 
+If you use **Open3DExplorer** for your academic research, please cite the following paper. 
 ```
 @ARTICLE{wang_whole_2023,
   author={Wang, Zhihao and Chen, Haoyao and Fu, Mengmeng},
@@ -29,7 +29,7 @@ If you use **Open3DExplorer** for your academic research, please cite the follow
 </div>
 
 
-**Video links:** [Youtube](https://youtu.be/zhcfmEk1JnI) or [Bilibili](https://www.bilibili.com/video/BV1co4y1w7cQ).
+**Video links:** [Youtube](https://youtu.be/zhcfmEk1JnI) or [Bilibili](https://www.bilibili.com/video/BV1rb4y157n2).
 
 
 ## 2. Installation
