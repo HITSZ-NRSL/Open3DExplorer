@@ -1,0 +1,7 @@
+<launch>
+<rosparam file="$(find octomap_generator)/params/octomap_generator.yaml" command="load"/>
+<node pkg="octomap_generator" type="octomap_generator" name="octomap_generator" output="screen"/>
+
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find octomap_generator)/semantic_mapping.rviz"/>
+
+</launch>

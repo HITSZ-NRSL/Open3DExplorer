@@ -1,0 +1,21 @@
+# Camera intrinsic matrix parameters (OpenCV)
+camera:
+  fx: 462.1379699707031
+  fy: 462.1379699707031
+  cx: 320
+  cy: 240
+  width: 640
+  height: 480
+
+semantic_pcl:  
+  color_image_topic: "/camera/color/image_raw"
+  depth_image_topic: "/camera/aligned_depth_to_color/image_raw"   # ! realsense
+  # depth_image_topic: "/camera/depth/image_rect_raw"  
+  # depth_image_topic: "/camera/depth/image_raw"    #gazebo
+
+  frame_id: "/camera_color_optical_frame"     # gazebo & 2022
+
+  point_type: 1   # 0 Color 1 MAX 2 Bayes
+  dataset: "ade20k" # sunrgbd
+  model_path: "/home/nrslcar/Open3DExplorer/src/semantic_slam/models/pspnet_50_ade20k.pth"
+  # {YOUR_PATH}

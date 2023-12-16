@@ -1,0 +1,114 @@
+<robot name="example_track" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- URDF file for general ROS systems such as ros_control, rviz, etc.           -->
+    <!-- We define here;                                                             -->
+    <!--     * a body to be wrapped by the track                                     -->
+    <!--     * a sprocket to drive the track                                         -->
+    <!--     * an axle and actuator for the sprocket                                 -->
+    <!--     * an idler wheel on the other side of the sprocket                      -->
+    <!-- Other entities specialized for Gazebo are defined in *_gazebo.urdf.xacro .  -->
+
+    <xacro:macro name="make_box_inertia" params="mass size_x size_y size_z">
+        <inertial>
+            <mass value="${mass}" />
+            <inertia ixx="${mass * (size_y * size_y + size_z * size_z) / 12}" ixy="0" ixz="0" iyy="${mass * (size_z * size_z + size_x * size_x) / 12}" iyz="0" izz="${mass * (size_x * size_x + size_y * size_y) / 12}" />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="make_wheel_inertia" params="mass radius length">
+        <inertial>
+            <mass value="${mass}" />
+            <!-- assuming axis of cylinder is y, not z -->
+            <inertia ixx="${mass * (radius * radius / 4 + length * length / 12)}" ixy="0" ixz="0" iyy="${mass * radius * radius / 2}" iyz="0" izz="${mass * (radius * radius / 4 + length * length / 12)}" />
+        </inertial>
+    </xacro:macro>
+
+    <!-- body to be wrapped by the track: box -->
+    <link name="body">
+        <xacro:make_box_inertia mass="1" size_x="0.5" size_y="0.51" size_z="0.2" />
+
+        <visual>
+            <geometry>
+                <box size="0.5 0.51 0.2" />
+            </geometry>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.51 0.5 0.2" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- sprocket driving the track : cylinder -->
+    <link name="sprocket">
+        <xacro:make_wheel_inertia mass="0.2" radius="0.08" length="0.51" />
+
+        <visual>
+            <origin xyz="0 0 0" rpy="${pi / 2} 0 0" />
+            <geometry>
+                <cylinder radius="0.08" length="0.51" />
+            </geometry>
+        </visual>
+        <visual>
+            <geometry>
+                <box size="0.01 0.51 0.20" />
+            </geometry>
+        </visual>
+        <visual>
+            <geometry>
+                <box size="0.20 0.51 0.01" />
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="${pi / 2} 0 0" />
+            <geometry>
+                <cylinder radius="0.08" length="0.51" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="sprocket_axle" type="continuous">
+        <origin xyz="0.35 0 0" rpy="0 0 0" />
+        <parent link="body" />
+        <child link="sprocket" />
+        <axis xyz="0 1 0" />
+    </joint>
+
+    <transmission name="sprocket_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="sprocket_axle">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="sprocket_actuator">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <!-- idler on the other side of the sprocket: cylinder -->
+    <link name="idler">
+        <xacro:make_wheel_inertia mass="0.2" radius="0.08" length="0.51" />
+
+        <visual>
+            <origin xyz="0 0 0" rpy="${pi / 2} 0 0" />
+            <geometry>
+                <cylinder radius="0.08" length="0.51" />
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="${pi / 2} 0 0" />
+            <geometry>
+                <cylinder radius="0.08" length="0.51" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="idler_axle" type="fixed">
+        <origin xyz="-0.35 0 0" rpy="0 0 0" />
+        <parent link="body" />
+        <child link="idler" />
+    </joint>
+
+</robot>

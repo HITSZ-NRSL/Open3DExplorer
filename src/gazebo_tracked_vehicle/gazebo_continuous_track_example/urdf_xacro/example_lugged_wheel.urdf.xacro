@@ -1,0 +1,80 @@
+<robot name="example_lugged_wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- URDF file for general ROS systems such as ros_control, rviz, etc.           -->
+    <!-- We define here;                                                             -->
+    <!--     * a stabilizer plate as a parent body of wheels                         -->
+    <!--     * a shaft to drive the wheels                                           -->
+    <!--     * an axle and actuator for the sprocket                                 -->
+    <!-- Other entities specialized for Gazebo are defined in *_gazebo.urdf.xacro .  -->
+
+    <xacro:macro name="make_box_inertia" params="mass size_x size_y size_z">
+        <inertial>
+            <mass value="${mass}" />
+            <inertia ixx="${mass * (size_y * size_y + size_z * size_z) / 12}" ixy="0" ixz="0" iyy="${mass * (size_z * size_z + size_x * size_x) / 12}" iyz="0" izz="${mass * (size_x * size_x + size_y * size_y) / 12}" />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="make_wheel_inertia" params="mass radius length">
+        <inertial>
+            <mass value="${mass}" />
+            <!-- assuming axis of cylinder is y, not z -->
+            <inertia ixx="${mass * (radius * radius / 4 + length * length / 12)}" ixy="0" ixz="0" iyy="${mass * radius * radius / 2}" iyz="0" izz="${mass * (radius * radius / 4 + length * length / 12)}" />
+        </inertial>
+    </xacro:macro>
+
+    <!-- stabilizer plate -->
+
+    <link name="stabilizer">
+        <xacro:make_box_inertia mass="0.1" size_x="0.5" size_y="0.1" size_z="0.01" />
+
+        <visual>
+            <geometry>
+                <box size="0.5 0.1 0.01" />
+            </geometry>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.5 0.1 0.01" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- shaft driving the wheels -->
+
+    <link name="shaft">
+        <xacro:make_wheel_inertia mass="0.05" radius="0.005" length="0.1" />
+
+        <visual>
+            <origin xyz="0 0 0" rpy="${pi / 2} 0 0" />
+            <geometry>
+                <cylinder radius="0.005" length="0.1" />
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="${pi / 2} 0 0" />
+            <geometry>
+                <cylinder radius="0.005" length="0.1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="shaft_axle" type="continuous">
+        <origin xyz="0.25 0 0" rpy="0 0 0" />
+        <parent link="stabilizer" />
+        <child link="shaft" />
+        <axis xyz="0 1 0" />
+    </joint>
+
+    <transmission name="shaft_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="shaft_axle">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="shaft_actuator">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+</robot>

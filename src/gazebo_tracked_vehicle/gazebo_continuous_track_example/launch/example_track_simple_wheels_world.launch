@@ -1,0 +1,55 @@
+<launch>
+
+    <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+    <arg name="paused" default="true" />
+    <arg name="use_sim_time" default="true" />
+    <arg name="gui" default="true" />
+    <arg name="headless" default="false" />
+    <arg name="debug" default="false" />
+
+    <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find gazebo_continuous_track_example)/world/example_track_simple_wheels.world" />
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)" />
+        <arg name="use_sim_time" value="$(arg use_sim_time)" />
+        <arg name="headless" value="$(arg headless)" />
+    </include>
+
+    <group ns="example_track_simple_wheels">
+
+        <!-- gazebo 7 has a bug which zeros the velocity of a position-controlled joint in every simulation step. -->
+        <!-- a workaround is to set pid gains for these joints like below.                                        -->
+        <!-- this enables effort-based position control in the simulated hardware,                                -->
+        <!-- instead of directly setting the position of joint                                                    -->
+        <!-->
+        <rosparam>
+            gazebo_ros_control:
+                pid_gains:
+                    sprocket_axle: {p: 1800.0, i: 0.0, d: 10.0}
+        </rosparam>
+        <!-->
+
+        <!-- Load the URDF into the ROS Parameter Server -->
+        <param name="robot_description" command="xacro --inorder '$(find gazebo_continuous_track_example)/urdf_xacro/example_track.urdf.xacro'" />
+
+        <rosparam>
+            joint_state_controller:
+                type: joint_state_controller/JointStateController
+                publish_rate: 10
+            sprocket_velocity_controller:
+                type: velocity_controllers/JointVelocityController
+                joint: sprocket_axle
+        </rosparam>
+
+        <!-- load and start the controllers -->
+        <node name="controller_starter" pkg="controller_manager" type="controller_manager" args="spawn joint_state_controller sprocket_velocity_controller" output="screen" />
+
+        <!-- convert joint states to TF transforms for rviz, etc -->
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+            <param name="tf_prefix" value="example_track" />
+        </node>
+    </group>
+
+</launch>

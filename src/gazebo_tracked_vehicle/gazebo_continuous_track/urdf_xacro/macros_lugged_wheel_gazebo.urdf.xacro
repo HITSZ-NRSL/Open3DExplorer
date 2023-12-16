@@ -1,0 +1,40 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!--                                -->
+    <!-- macros for making lugged wheel -->
+    <!--                                -->
+
+    <xacro:include filename="macros_common_gazebo.urdf.xacro" />
+
+    <!-- macro which expands to plugin definition -->
+
+    <xacro:macro name="make_track_plugin_lugged_wheel" params="name sprocket_joint:=^ pitch_diameter:=^ *pattern">
+        <gazebo>
+            <plugin name="${name}" filename="libContinuousTrack.so">
+                <sprocket>
+                    <joint>${sprocket_joint}</joint>
+                    <pitch_diameter>${pitch_diameter}</pitch_diameter>
+                </sprocket>
+                <trajectory>
+                    <segment>
+                        <joint>${name}_arc_segment_joint0</joint>
+                        <end_position>${2 * pi}</end_position>
+                    </segment>
+                </trajectory>
+                <xacro:insert_block name="pattern" />
+            </plugin>
+        </gazebo>
+    </xacro:macro>
+
+    <!-- main entry point: macro for making a lugged wheel by ContinuousTrack plugin -->
+
+    <xacro:macro name="make_lugged_wheel" params="name x:=^|0 y:=^|0 z:=^|0 roll:=^|0 pitch:=^|0 yaw:=^|0 mass:=^ radius:=^ width:=^ parent:=^ sprocket_joint:=^ pitch_diameter:=^ *material *pattern mu:=^|0.5 min_depth:=^|0.01 implicit_spring_damper:=^|1">
+        <xacro:populate_arc_segments name_prefix="${name}_arc_segment" x="${x}" z="${z + radius}" mass="${mass / 4}" length="${width}" count="1">
+            <xacro:insert_block name="material" />
+        </xacro:populate_arc_segments>
+        <xacro:make_track_plugin_lugged_wheel name="${name}">
+            <xacro:insert_block name="pattern" />
+        </xacro:make_track_plugin_lugged_wheel>
+    </xacro:macro>
+
+</robot>

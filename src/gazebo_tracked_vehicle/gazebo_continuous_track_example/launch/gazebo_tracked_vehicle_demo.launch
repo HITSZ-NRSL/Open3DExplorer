@@ -1,0 +1,61 @@
+<launch>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch" >
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+        <!-- <arg name="world_name" value="$(find gazebo_continuous_track_example)/world/tracked_vehicle_simple.world" /> -->
+
+    <rosparam>
+        joint_state_controller:
+            type: joint_state_controller/JointStateController
+            publish_rate: 10
+        <!-- sprocket_velocity_controller:
+            type: velocity_controllers/JointVelocityController
+            joint: sprocket_axle
+        joint_position_controller:
+            type: effort_controllers/JointPositionController
+            joint: push_plate_joint
+            pid: {p: 1000.0, i: 0.01, d: 10.0} -->
+    </rosparam>
+
+  <!-- Load robot description -->
+    <param name="robot_description" command="xacro --inorder '$(find gazebo_continuous_track_example)/urdf/tracked_vehicle.urdf.xacro'" />
+
+    <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" output="screen" 
+        args="
+            -x 0
+            -y 3
+            -z 0.5
+            -Y -1.57
+            -urdf 
+            -param robot_description 
+            -model track_vehicle" />
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+        <param name="publish_frequency" type="double" value="30.0" />
+    </node>
+
+    <!-- Load controller configuration & Start spawn controllers -->
+    <rosparam file="$(find gazebo_continuous_track_example)/config/control.yaml" command="load"/>
+    <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="track_joint_publisher track_velocity_controller"/>
+
+    <rosparam file="$(find plt_control)/config/gimbal.yaml" command="load"/>
+
+    <node name="cmd_relay" pkg="topic_tools" type="relay" args="/cmd_vel /track_velocity_controller/cmd_vel" output="screen" />
+
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen"  args="joint_state_controller  joint10_velocity_controller joint11_velocity_controller"/>
+        <!-- joint_position_controller sprocket_velocity_controller -->
+    <node pkg="plt_control" name="control_py" type="control.py"  required="false" />
+
+    <!-- <node pkg="plt_control" name="pubtf_py" type="pub_tf_.py" launch-prefix="xterm -e" required="true" /> -->
+    <node pkg="plt_control" name="pubtfbase_py" type="pub_tf_base.py" required="true" />
+    <!-- 监听gimbal_link的tf，gimbal_link到camera_link的转换由urdf的tf获取 -->
+
+    <node pkg="teleop_twist_keyboard" type="twist_to_std_msg.py" name="twist_to_std_msg_node" />
+    <!-- <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop_twist_keyboard_node" launch-prefix="xterm -e"/> -->
+    <!-- <node pkg="rqt_publisher" type="rqt_publisher" name="swing_arm_controller" /> -->
+</launch>

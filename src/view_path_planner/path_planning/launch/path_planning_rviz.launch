@@ -1,0 +1,21 @@
+<launch>	  
+  <!-- <rosparam command="load" file="$(find path_planning)/param/exploration_plane.yaml" /> -->
+  <rosparam command="load" file="$(find path_planning)/param/exploration_plane.yaml" />
+
+	<node pkg="path_planning" type="path_planning_node" name="path_planning_node" output="screen"/>
+
+	<!--rviz-->
+	<node pkg="rviz" type="rviz" name="rviz_pathplanning" args="-d $(find path_planning)/path_planning_bag.rviz"/>
+
+  <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
+    <param name="resolution" value="0.4" />
+    <param name="publish_free_space" value="true" />
+    
+    <param name="frame_id" type="string" value="world" />
+    
+    <param name="sensor_model/max_range" value="100" />
+
+    <remap from="cloud_in" to="/debug_points" />
+  </node>
+
+</launch>

@@ -1,0 +1,62 @@
+<launch>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch" >
+    <arg name="world_name" value="$(find gazebo_continuous_track_example)/world/plane_3d_construction_smallcity_semantic.world"/>
+  </include>
+
+  <rosparam command="load" file="$(find gazebo_continuous_track_example)/config/explore_range_plane.yaml" />
+
+    <rosparam>
+        joint_state_controller:
+            type: joint_state_controller/JointStateController
+            publish_rate: 10
+    </rosparam>
+
+  <!-- Load robot description -->
+    <param name="robot_description" command="xacro --inorder '$(find gazebo_continuous_track_example)/urdf/tracked_vehicle.urdf.xacro'" />
+
+    <arg name="pos_x" default="3" />
+    <arg name="pos_y" default="-5" />
+    <arg name="pos_z" default="0.5" /> 
+    <arg name="use_orbslam" default="false" /> 
+
+    <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" output="screen" 
+        args="
+            -x $(arg pos_x)
+            -y $(arg pos_y)
+            -z $(arg pos_z)
+            -Y 0
+            -urdf 
+            -param robot_description 
+            -model track_vehicle" />
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+        <param name="publish_frequency" type="double" value="30.0" />
+    </node>
+
+    <!-- Load controller configuration & Start spawn controllers -->
+    <rosparam file="$(find gazebo_continuous_track_example)/config/control.yaml" command="load"/>
+    <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="track_joint_publisher track_velocity_controller"/>
+
+    <rosparam file="$(find gazebo_continuous_track_example)/config/gimbal.yaml" command="load"/>
+
+    <node name="cmd_relay" pkg="topic_tools" type="relay" args="/cmd_vel /track_velocity_controller/cmd_vel" output="screen" />
+
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen"  args="joint_state_controller joint10_velocity_controller joint11_velocity_controller"/>
+        <!-- joint_position_controller sprocket_velocity_controller  -->
+    
+    <!-- 用于稳定初始静止状态下的云台 -->
+    <!-- <node pkg="plt_control" name="control_py" type="control.py"  required="false" /> -->
+    
+    <!-- <node pkg="teleop_twist_keyboard" name="view_control" type="view_control.py"  required="false" launch-prefix="xterm -e"/>  -->
+    <node pkg="teleop_twist_keyboard" name="view_control" type="view_control.py"  required="false" /> 
+
+    <!-- use_orbslam为false(即使用gazebo直接发布tf)则运行此句 监听gimbal_link的tf，gimbal_link到camera_link的转换由urdf的tf获取 -->
+    <node unless="$(arg use_orbslam)" pkg="gazebo_continuous_track_example" name="pubtfbase_py" type="pub_tf_base_landshaker.py" required="true"/>
+
+    <node pkg="teleop_twist_keyboard" type="twist_to_std_msg.py" name="twist_to_std_msg_node" />
+
+    <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop_twist_keyboard_node" launch-prefix="xterm -e"/>
+
+    <!-- <node pkg="rqt_publisher" type="rqt_publisher" name="swing_arm_controller" /> -->
+</launch>

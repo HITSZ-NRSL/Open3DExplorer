@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro"  name="tracked_vehicle">
+
+    <xacro:property name="left_offset_y" value="0.287" /> 
+    <xacro:property name="right_offset_y" value="-0.287" /> 
+    <xacro:property name="swing_offset_x" value="-0.479" /> 
+
+    <xacro:macro name="make_box_inertia" params="mass size_x size_y size_z">
+        <inertial>
+            <mass value="${mass}" />
+            <inertia ixx="${mass * (size_y * size_y + size_z * size_z) / 12}" ixy="0" ixz="0" 
+                     iyy="${mass * (size_z * size_z + size_x * size_x) / 12}" iyz="0" 
+                     izz="${mass * (size_x * size_x + size_y * size_y) / 12}" />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:include filename="$(find gazebo_continuous_track_example)/urdf_xacro/single_track.urdf.xacro" />
+    <!-- <xacro:include filename="$(find gazebo_continuous_track_example)/urdf/swing_arm.urdf.xacro" /> -->
+
+    <xacro:single_track prefix="left" offset_y="${left_offset_y}"/>
+    <xacro:single_track prefix="right" offset_y="${right_offset_y}"/>
+    <!-- <xacro:swing_arm mass="0.3" offset_x="${swing_offset_x}"/> -->
+
+    <gazebo reference="base_link">
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="pusher_visual_left">
+        <mu1 value="0.5"/>
+        <mu2 value="0.5"/>
+        <kp value="10000000.0" />
+        <kd value="1.0" />
+        <fdir1 value="1 0 0"/>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="pusher_visual_right">
+        <mu1 value="0.5"/>
+        <mu2 value="0.5"/>
+        <kp value="10000000.0" />
+        <kd value="1.0" />
+        <fdir1 value="1 0 0"/>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
+    <link
+      name="world">
+    </link>  
+  
+    <joint name="world_to_baselink" type="floating">
+      <parent link="world"/>
+      <child link="base_link"/>
+      <origin
+          xyz="0 0 0.0"
+          rpy="0 0 0" />
+    </joint>
+
+
+    <link name="base_link">
+        <xacro:make_box_inertia mass="20" size_x="0.5" size_y="0.51" size_z="1" />
+        <visual>
+            <geometry>
+                <mesh filename="package://gazebo_continuous_track_example/meshes/base_meter.STL" />
+            </geometry>
+        </visual>
+
+        <collision>
+            <geometry>
+                <!-- <box size="0.4 0.4 0.1" /> -->
+                <mesh filename="package://gazebo_continuous_track_example/meshes/base_meter.STL" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="left_track_joint" type="fixed">
+        <origin xyz="0 ${left_offset_y} 0" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="left_body" />
+    </joint>
+
+    <joint name="right_track_joint" type="fixed">
+        <origin xyz="0 ${right_offset_y} 0" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="right_body" />
+    </joint>
+
+    <!-- <link name="pusher_visual_left">
+        <xacro:make_box_inertia mass="1" size_x="0.5" size_y="0.51" size_z="1" />
+        <visual>
+            <geometry>
+                <box size="0.5 0.025  0.08" />
+            </geometry>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.5 0.025  0.08" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="pusher_visual_right">
+        <xacro:make_box_inertia mass="1" size_x="0.5" size_y="0.51" size_z="1" />
+        <visual>
+            <geometry>
+                <box size="0.5 0.025  0.08" />
+            </geometry>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.5 0.025 0.08" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="pusher_visual_left_joint" type="fixed">
+        <origin xyz="-0.27 0.12 -0.1" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="pusher_visual_left" />
+    </joint>
+    <joint name="pusher_visual_right_joint" type="fixed">
+        <origin xyz="-0.27 -0.12 -0.1" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="pusher_visual_right" />
+    </joint> -->
+
+    <xacro:include filename="$(find gazebo_continuous_track_example)/urdf/gimbal.urdf.xacro" />
+
+    <joint name="gimbal_joint_" type="fixed">
+        <origin xyz="0.15 -0.0 0.64" rpy="0 0 3.14159"/>
+        <parent link="base_link"/>
+        <child link="gimbal_link"/>
+    </joint>
+    
+    <!-- <joint name="push_plate_joint" type="continuous">
+        <origin xyz="${swing_offset_x} 0 -0.1" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="arm_connector" />
+        <axis xyz="0 1 0"/>
+    </joint>
+
+    <transmission name="push_plate_joint_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="push_plate_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="push_plate_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission> -->
+
+    <!-- ros_control for gazebo, should only load once!! -->
+    <gazebo>
+        <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+            <legacyModeNS>true</legacyModeNS>
+        </plugin>
+    </gazebo>
+
+    <gazebo reference="base_link">
+      <gravity>true</gravity>
+      <sensor name="imu_sensor" type="imu">
+        <always_on>true</always_on>
+        <update_rate>200</update_rate>
+        <visualize>true</visualize>
+        <topic>__default_topic__</topic>
+        <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+          <topicName>body_imu</topicName>
+          <bodyName>base_link</bodyName>
+          <updateRateHZ>200.0</updateRateHZ>
+          <gaussianNoise>0.0</gaussianNoise>
+          <xyzOffset>0 0 0</xyzOffset>
+          <rpyOffset>0 0 0</rpyOffset>
+          <frameName>imu_link</frameName>
+        </plugin>
+        <pose>0 0 0 0 0 0</pose>
+      </sensor>
+    </gazebo>
+
+    <gazebo>
+      <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>50.0</updateRate>
+        <bodyName>base_link</bodyName>
+        <topicName>ground_truth/base_state</topicName>
+        <gaussianNoise>0.01</gaussianNoise>
+        <frameName>world</frameName>
+      </plugin>
+    </gazebo>
+
+</robot>

@@ -1,0 +1,11 @@
+<launch>	  
+  <rosparam command="load" file="$(find path_planning)/param/exploration_plane.yaml" />
+
+	<node pkg="path_planning" type="path_planning_node" name="path_planning_node" output="screen"/>
+
+	<!--rviz-->
+	<node pkg="rviz" type="rviz" name="rviz_pathplanning" args="-d $(find path_planning)/semantic_mapping.rviz"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 1 world map 100" />  
+
+</launch>

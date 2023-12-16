@@ -1,0 +1,37 @@
+# 左下坐标：{explore_range_blx, explore_range_bly}; 右上坐标：{explore_range_urx, explore_range_ury}
+
+# using orb_slam
+# explore_range_blx: -3.0
+# explore_range_bly: 5.0
+# explore_range_urx: 30.0
+# explore_range_ury: -15.0
+
+# # single : using gazebo feedback
+# explore_range_blx: 0.0
+# explore_range_bly: -5.0
+# explore_range_urx: 33.0
+# explore_range_ury: -25.0
+
+# small city: using gazebo feedback
+explore_range_blx: -17.0
+explore_range_urx: 33.0
+explore_range_bly: 10.0
+explore_range_ury: -25.0
+
+# small city: using orb_slam
+# explore_range_blx: -20.0
+# explore_range_urx: 30.0
+# explore_range_bly: 15.0
+# explore_range_ury: -20.0
+
+# terrain
+# explore_range_blx: -40.0
+# explore_range_urx: 40.0
+# explore_range_bly: 55.0
+# explore_range_ury: -25.0
+
+# unlimited
+# explore_range_blx: -200.0
+# explore_range_bly: 200.0
+# explore_range_urx: 200.0
+# explore_range_ury: -200.0

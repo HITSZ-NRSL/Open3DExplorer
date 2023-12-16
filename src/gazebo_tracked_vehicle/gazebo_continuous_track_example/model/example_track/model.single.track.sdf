@@ -1,0 +1,887 @@
+<sdf version='1.6'>
+    <model name='example_track'>
+        <link name='body'>
+            <pose frame=''>0 0 0 0 0 0</pose>
+            <inertial>
+                <pose frame=''>0 0 0 0 0 0</pose>
+                <mass>1.2</mass>
+                <inertia>
+                    <ixx>0.0296633</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.0452233</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.06758</izz>
+                </inertia>
+            </inertial>
+            <!-- body box -->
+            <collision name='body_collision'>
+                <pose frame=''>0 0 0 0 0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.4 0.151 0.15</size>
+                    </box>
+                </geometry>
+            </collision>
+
+            <visual name='body_visual'>
+                <pose frame=''>0 0 0 0 0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.4 0.150 0.15</size>
+                    </box>
+                </geometry>
+            </visual>
+
+            <!-- body cylinder: back-->
+            <collision name='body_fixed_joint_lump__idler_collision_1'>
+                <pose frame=''>-0.36 0 0 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.15</length>
+                        <radius>0.080</radius>
+                    </cylinder>
+                </geometry>
+            </collision>
+
+            <visual name='body_fixed_joint_lump__idler_visual_1'>
+                <pose frame=''>-0.36 0 0 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.15</length>
+                        <radius>0.080</radius>
+                    </cylinder>
+                </geometry>
+            </visual>
+
+            <!-- body cylinder: front -->
+            <collision name='body_fixed_joint_lump__idler_collision_2'>
+                <pose frame=''>0.445 0 0.102 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.150</length>
+                        <radius>0.070</radius>
+                    </cylinder>
+                </geometry>
+            </collision>
+
+            <visual name='body_fixed_joint_lump__idler_visual_2'>
+                <pose frame=''>0.445 0 0.102 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.150</length>
+                        <radius>0.070</radius>
+                    </cylinder>
+                </geometry>
+            </visual>
+
+            <!-- body cylinder: top -->
+            <collision name='body_fixed_joint_lump__idler_collision_3'>
+                <pose frame=''>0.00953 0 0.16618 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.15</length>
+                        <radius>0.062</radius>
+                    </cylinder>
+                </geometry>
+            </collision>
+
+            <visual name='body_fixed_joint_lump__idler_visual_3'>
+                <pose frame=''>0.00953 0 0.16618 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.150</length>
+                        <radius>0.062</radius>
+                    </cylinder>
+                </geometry>
+            </visual>
+        </link>
+
+        <!-- sprocket cylinder: main -->
+        <link name='sprocket'>
+            <pose frame=''>0.36 0 -0.018 0 -0 0</pose>
+            <inertial>
+                <pose frame=''>0 0 0 0 0 0</pose>
+                <mass>0.2</mass>
+                <inertia>
+                    <ixx>0.004655</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00064</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.004655</izz>
+                </inertia>
+            </inertial>
+            <collision name='sprocket_collision'>
+                <pose frame=''>0 0 0 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.150</length>
+                        <radius>0.062</radius>
+                    </cylinder>
+                </geometry>
+            </collision>
+            <visual name='sprocket_visual'>
+                <pose frame=''>0 0 0 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.150</length>
+                        <radius>0.062</radius>
+                    </cylinder>
+                </geometry>
+            </visual>
+            <visual name='sprocket_visual_1'>
+                <pose frame=''>0 0 0 0 -0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.01 0.152 0.12</size>
+                    </box>
+                </geometry>
+            </visual>
+            <visual name='sprocket_visual_2'>
+                <pose frame=''>0 0 0 0 -0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.12 0.152 0.01</size>
+                    </box>
+                </geometry>
+            </visual>
+        </link>
+        <joint name='sprocket_axle' type='revolute'>
+            <child>sprocket</child>
+            <parent>body</parent>
+            <axis>
+                <xyz>0 1 0</xyz>
+                <limit>
+                    <lower>-1e+16</lower>
+                    <upper>1e+16</upper>
+                </limit>
+                <dynamics>
+                    <spring_reference>0</spring_reference>
+                    <spring_stiffness>0</spring_stiffness>
+                </dynamics>
+                <use_parent_model_frame>0</use_parent_model_frame>
+            </axis>
+        </joint>
+
+        <!-- linear link0: top back -->
+        <link name='track_straight_segment_link0'>
+            <pose frame=''>-0.39396 0 0.0855 0 -0.37821 0</pose>
+            <inertial>
+                <pose frame=''>0 0 0 0 0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00219354</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00419354</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00616667</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <pose frame=''>0.202385 0 -0.01 0 0 0</pose> <!-- half width, half height-->
+                <geometry>
+                    <box>
+                        <size>0.40477 0.15 0.02</size>
+                    </box>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual name='visual'>
+                <pose frame=''>0.202385 0 -0.01 0 0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.40477 0.15 0.02</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+        </link>
+
+        <joint name='track_straight_segment_joint0' type='prismatic'>
+            <child>track_straight_segment_link0</child>
+            <parent>body</parent>
+            <axis>
+                <xyz>1 0 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+                <limit>
+                    <lower>-1e+16</lower>
+                    <upper>1e+16</upper>
+                </limit>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+
+        <!-- linear link1: top front -->
+        <link name='track_straight_segment_link1'>
+            <pose frame=''>0.01898 0 0.23955 0 0.128107 0</pose>
+            <inertial>
+                <pose frame=''>0.22005 0 -0.01 0 0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00219354</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00419354</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00616667</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <pose frame=''>0.22005 0 -0.01 0 0 0</pose> <!-- half width, half height-->
+                <geometry>
+                    <box>
+                        <size>0.44010 0.15 0.02</size>
+                    </box>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual name='visual'>
+                <pose frame=''>0.22005 0 -0.01 0 0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.44010 0.15 0.02</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+        </link>
+
+        <joint name='track_straight_segment_joint1' type='prismatic'>
+            <child>track_straight_segment_link1</child>
+            <parent>body</parent>
+            <axis>
+                <xyz>1 0 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+                <limit>
+                    <lower>-1e+16</lower>
+                    <upper>1e+16</upper>
+                </limit>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+
+        <!-- linear link2: bottom front -->
+        <link name='track_straight_segment_link2'>
+            <pose frame=''>0.50298 0 0.04402 3.14159 0.900415 3.14159</pose>
+            <inertial>
+                <pose frame=''>0.072844 0 -0.01 0 -0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00219354</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00419354</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00616667</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <pose frame=''> 0.072844 0 -0.01 0 0 0 </pose>
+                <geometry>
+                    <box>
+                        <size>0.145688 0.15 0.02</size>
+                    </box>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual name='visual'>
+                <pose frame=''> 0.072844 0 -0.01 0 0 0 </pose>
+                <geometry>
+                    <box>
+                        <size>0.145688 0.15 0.02</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+        </link>
+
+        <joint name='track_straight_segment_joint2' type='prismatic'>
+            <child>track_straight_segment_link2</child>
+            <parent>body</parent>
+            <axis>
+                <xyz>1 0 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+                <limit>
+                    <lower>-1e+16</lower>
+                    <upper>1e+16</upper>
+                </limit>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+
+        <!-- linear link3: bottom -->
+        <link name='track_straight_segment_link3'>
+            <pose frame=''>0.36 0 -0.092 3.14159 -0 3.14159</pose>
+            <inertial>
+                <pose frame=''>0.35 0 -0.01 0 -0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00219354</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00419354</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00616667</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <pose frame=''>0.35 0 -0.01 0 -0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.7 0.15 0.02</size>
+                    </box>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual name='visual'>
+                <pose frame=''>0.35 0 -0.01 0 0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.7 0.15 0.02</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+        </link>
+
+        <joint name='track_straight_segment_joint3' type='prismatic'>
+            <child>track_straight_segment_link3</child>
+            <parent>body</parent>
+            <axis>
+                <xyz>1 0 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+                <limit>
+                    <lower>-1e+16</lower>
+                    <upper>1e+16</upper>
+                </limit>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+
+
+        <!-- arc link0: main cylinder -->
+        <link name='track_arc_segment_link0'>
+            <!-- <pose frame=''>0.36 0 0.056 0 0 0</pose> -->
+            <!-- 提高底下两个轮子的高度z+=0.006，避免链条转向造成颠簸 -->
+            <pose frame=''>0.36 0 0.062 0 0 0</pose>
+            <inertial>
+                <pose frame=''>0 0 -0.074 1.5708 -0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00241396</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00241396</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00066125</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <pose frame=''>0 0 -0.074 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.148</length>
+                        <radius>0.074</radius>
+                    </cylinder>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual name='visual'>
+                <pose frame=''>0 0 -0.074 1.5708 -0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.148</length>
+                        <radius>0.074</radius>
+                    </cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+        </link>
+        
+        <joint name='track_arc_segment_joint0' type='revolute'>
+            <child>track_arc_segment_link0</child>
+            <parent>body</parent>
+            <pose frame=''>0 0 -0.074 0 -0 0</pose> <!-- minus radius -->
+            <axis>
+                <xyz>0 1 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+                <limit>
+                    <lower>-1e+16</lower>
+                    <upper>1e+16</upper>
+                </limit>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+
+        <!-- arc link1: back cylinder -->
+        <link name='track_arc_segment_link1'>
+            <!-- <pose frame=''>-0.36 0 -0.092 3.14159 -0 3.14159</pose> -->
+            <!-- 提高底下两个轮子的高度z+=0.006，避免链条转向造成颠簸 -->
+            <pose frame=''>-0.36 0 -0.086 3.14159 -0 3.14159</pose>
+            <inertial>
+                <pose frame=''>0 0 -0.092 1.5708 -0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00241396</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00241396</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00066125</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <pose frame=''>0 0 -0.092 1.5708 -0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.148</length>
+                        <radius>0.092</radius>
+                    </cylinder>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual name='visual'>
+                <pose frame=''>0 0 -0.092 1.5708 -0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.148</length>
+                        <radius>0.092</radius>
+                    </cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+        </link>
+        
+        <joint name='track_arc_segment_joint1' type='revolute'>
+            <child>track_arc_segment_link1</child>
+            <parent>body</parent>
+            <pose frame=''>0 0 -0.092 0 -0 0</pose>
+            <axis>
+                <xyz>0 1 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+                <limit>
+                    <lower>-1e+16</lower>
+                    <upper>1e+16</upper>
+                </limit>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+
+        <!-- arc link2: front cylinder -->
+        <link name='track_arc_segment_link2'>
+            <pose frame=''>0.445 0 0.184 0 0 0</pose>
+            <inertial>
+                <pose frame=''>0 0 -0.082 1.5708 -0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00241396</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00241396</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00066125</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <pose frame=''>0 0 -0.082 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.148</length>
+                        <radius>0.082</radius>
+                    </cylinder>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual name='visual'>
+                <pose frame=''>0 0 -0.082 1.5708 -0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.148</length>
+                        <radius>0.082</radius>
+                    </cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+        </link>
+        
+        <joint name='track_arc_segment_joint2' type='revolute'>
+            <child>track_arc_segment_link2</child>
+            <parent>body</parent>
+            <pose frame=''>0 0 -0.082 0 -0 0</pose> <!-- minus radius -->
+            <axis>
+                <xyz>0 1 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+                <limit>
+                    <lower>-1e+16</lower>
+                    <upper>1e+16</upper>
+                </limit>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+
+        <!-- arc link3: top cylinder -->
+        <link name='track_arc_segment_link3'>
+            <pose frame=''>0.00953 0 0.24018 0 0 0</pose>
+            <inertial>
+                <pose frame=''>0 0 -0.074 1.5708 -0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00241396</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00241396</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00066125</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <pose frame=''>0 0 -0.074 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.148</length>
+                        <radius>0.074</radius>
+                    </cylinder>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual name='visual'>
+                <pose frame=''>0 0 -0.074 1.5708 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.148</length>
+                        <radius>0.074</radius>
+                    </cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+        </link>
+        
+        <joint name='track_arc_segment_joint3' type='revolute'>
+            <child>track_arc_segment_link3</child>
+            <parent>body</parent>
+            <pose frame=''>0 0 -0.074 0 -0 0</pose> <!-- minus radius -->
+            <axis>
+                <xyz>0 1 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+                <limit>
+                    <lower>-1e+16</lower>
+                    <upper>1e+16</upper>
+                </limit>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+
+
+        <plugin name='track' filename='libContinuousTrack.so'>
+            <sprocket>
+                <joint>sprocket_axle</joint>
+                <pitch_diameter>0.24</pitch_diameter>
+            </sprocket>
+
+            <trajectory>
+                <!-- linear link0: top back -->
+                <segment>
+                    <joint>track_straight_segment_joint0</joint>
+                    <end_position>0.42391</end_position>
+                </segment>
+                <!-- arc link3: top cylinder -->
+                <segment>
+                    <joint>track_arc_segment_joint3</joint>
+                    <end_position>6.283</end_position>
+                </segment>
+                <!-- linear link1: top front -->
+                <segment>
+                    <joint>track_straight_segment_joint1</joint>
+                    <end_position>0.45924</end_position>
+                </segment>
+                <!-- arc link2: front cylinder -->
+                <segment>
+                    <joint>track_arc_segment_joint2</joint>
+                    <end_position>6.283</end_position>
+                </segment>
+                <!-- linear link2: bottom front -->
+                <segment>
+                    <joint>track_straight_segment_joint2</joint>
+                    <end_position>0.14592</end_position>
+                </segment>
+                <!-- arc link0: main cylinder -->
+                <segment>
+                    <joint>track_arc_segment_joint0</joint>
+                    <end_position>6.283</end_position>
+                </segment>
+                <!-- linear link3: bottom -->
+                <segment>
+                    <joint>track_straight_segment_joint3</joint>
+                    <end_position>0.7</end_position>
+                </segment>  
+                <!-- arc link1: back cylinder -->
+                <segment>
+                    <joint>track_arc_segment_joint1</joint>
+                    <end_position>6.283</end_position>
+                </segment>
+
+            </trajectory> 
+                
+            <pattern>
+                <elements_per_round>50</elements_per_round>
+                <element>
+                    <collision name='collision'>
+                        <pose>0 0 0 0 0 0</pose>
+                        <geometry>
+                            <box>
+                                <size>0.025 0.15 0.025 </size>
+                            </box>
+                        </geometry>
+                        <surface>
+                            <friction>
+                                <ode>
+                                    <mu>0.5</mu>
+                                    <mu2>0.5</mu2>
+                                </ode>
+                            </friction>
+                            <contact>
+                                <ode>
+                                    <min_depth>0.01</min_depth>
+                                </ode>
+                            </contact>
+                        </surface>
+                    </collision>
+                    <visual name='visual'>
+                        <pose>0 0 0 0 0 0</pose>
+                        <geometry>
+                            <box>
+                                <size>0.025 0.15 0.025 </size>
+                            </box>
+                        </geometry>
+                        <material>
+                            <ambient>0.1 0.1 0.3 1</ambient>
+                            <diffuse>0.2 0.2 0.2 1</diffuse>
+                            <specular>0 0 0 1</specular>
+                            <emissive>0 0 0 1</emissive>
+                        </material>
+                    </visual>
+                </element>
+                <!-- <element>
+                    <collision name='collision'>
+                        <pose>0 0.25 0 1.57079632679 0 0</pose>
+                        <geometry>
+                            <polyline>
+                                <point>-0.02 -0.01</point>
+                                <point>-0.01 0.01</point>
+                                <point>0.01 0.01</point>
+                                <point>0.02 -0.01</point>
+                                <height>0.5</height>
+                            </polyline>
+                        </geometry>
+                        <surface>
+                            <friction>
+                                <ode>
+                                    <mu>0.5</mu>
+                                    <mu2>0.5</mu2>
+                                </ode>
+                            </friction>
+                            <contact>
+                                <ode>
+                                    <min_depth>0.01</min_depth>
+                                </ode>
+                            </contact>
+                        </surface>
+                    </collision>
+                    <visual name='visual'>
+                        <pose>0 0.25 0 1.57079632679 0 0</pose>
+                        <geometry>
+                            <polyline>
+                                <point>-0.02 -0.01</point>
+                                <point>-0.01 0.01</point>
+                                <point>0.01 0.01</point>
+                                <point>0.02 -0.01</point>
+                                <height>0.5</height>
+                            </polyline>
+                        </geometry>
+                        <material>
+                            <ambient>0.1 0.1 0.3 1</ambient>
+                            <diffuse>0.2 0.2 0.2 1</diffuse>
+                            <specular>0 0 0 1</specular>
+                            <emissive>0 0 0 1</emissive>
+                        </material>
+                    </visual>
+                </element> -->
+            </pattern>
+        </plugin>
+        <static>0</static>
+        <plugin name='gazebo_ros_control' filename='libgazebo_ros_control.so'>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+            <legacyModeNS>0</legacyModeNS>
+        </plugin>
+    </model>
+</sdf>

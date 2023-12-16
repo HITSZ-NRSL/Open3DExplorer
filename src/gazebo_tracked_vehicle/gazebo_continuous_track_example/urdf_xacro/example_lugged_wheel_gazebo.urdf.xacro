@@ -1,0 +1,59 @@
+<robot name="example_lugged_wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- -->
+
+    <xacro:include filename="$(find gazebo_continuous_track)/urdf_xacro/macros_lugged_wheel_gazebo.urdf.xacro" />
+    <xacro:include filename="example_lugged_wheel.urdf.xacro" />
+
+    <!-- -->
+
+    <xacro:property name="wheel_material">
+        <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.2 0.2 0.2 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+        </material>
+    </xacro:property>
+
+    <xacro:make_lugged_wheel name="left_wheel" x="0.25" y="0.15" mass="0.4" radius="0.115" width="0.2" parent="stabilizer" sprocket_joint="shaft_axle" pitch_diameter="0.24">
+        <xacro:insert_block name="wheel_material" />
+        <pattern>
+            <elements_per_round>8</elements_per_round>
+            <element>
+                <xacro:make_box_element pose="0 0 0.03 0 0 0" size="0.005 0.2 0.07">
+                    <xacro:insert_block name="wheel_material" />
+                </xacro:make_box_element>
+            </element>
+        </pattern>
+    </xacro:make_lugged_wheel>
+
+    <xacro:make_lugged_wheel name="right_wheel" x="0.25" y="-0.15" mass="0.4" radius="0.115" width="0.2" parent="stabilizer" sprocket_joint="shaft_axle" pitch_diameter="0.24">
+        <xacro:insert_block name="wheel_material" />
+        <pattern>
+            <elements_per_round>8</elements_per_round>
+            <element>
+                <xacro:make_box_element pose="0 0 0.03 0 0 0" size="0.005 0.2 0.07">
+                    <xacro:insert_block name="wheel_material" />
+                </xacro:make_box_element>
+            </element>
+        </pattern>
+    </xacro:make_lugged_wheel>
+
+    <!-- low friction between the stabilizer and ground -->
+
+    <gazebo reference="stabilizer">
+        <mu1>0.01</mu1>
+        <mu2>0.01</mu2>
+    </gazebo>
+
+    <!-- ros_control for gazebo -->
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+            <legacyModeNS>false</legacyModeNS>
+        </plugin>
+    </gazebo>
+
+</robot>

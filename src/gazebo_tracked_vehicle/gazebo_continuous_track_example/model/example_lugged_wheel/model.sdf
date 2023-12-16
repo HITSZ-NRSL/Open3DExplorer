@@ -1,0 +1,354 @@
+<sdf version='1.6'>
+  <model name='example_lugged_wheel'>
+    <link name='stabilizer'>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>8.41667e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00208417</iyy>
+          <iyz>0</iyz>
+          <izz>0.00216667</izz>
+        </inertia>
+      </inertial>
+      <collision name='stabilizer_collision'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.5 0.1 0.01</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.01</mu>
+              <mu2>0.01</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='stabilizer_visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.5 0.1 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>__default__</uri>
+            <name>__default__</name>
+          </script>
+        </material>
+      </visual>
+      <gravity>1</gravity>
+      <velocity_decay/>
+    </link>
+    <link name='shaft'>
+      <pose frame=''>0.25 0 0 0 -0 0</pose>
+      <inertial>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>4.19792e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>6.25e-07</iyy>
+          <iyz>0</iyz>
+          <izz>4.19792e-05</izz>
+        </inertia>
+      </inertial>
+      <collision name='shaft_collision'>
+        <pose frame=''>0 0 0 1.5708 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.1</length>
+            <radius>0.005</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='shaft_visual'>
+        <pose frame=''>0 0 0 1.5708 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.1</length>
+            <radius>0.005</radius>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='shaft_axle' type='revolute'>
+      <child>shaft</child>
+      <parent>stabilizer</parent>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+    <link name='left_wheel_arc_segment_link0'>
+      <pose frame=''>0.25 0.15 0.115 0 -0 0</pose>
+      <inertial>
+        <pose frame=''>0 0 -0.115 1.5708 -0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.000663958</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.000663958</iyy>
+          <iyz>0</iyz>
+          <izz>0.00066125</izz>
+        </inertia>
+      </inertial>
+      <collision name='collision'>
+        <pose frame=''>0 0 -0.115 1.5708 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.2</length>
+            <radius>0.115</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>0.5</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <min_depth>0.01</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='visual'>
+        <pose frame=''>0 0 -0.115 1.5708 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.2</length>
+            <radius>0.115</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.8 0.8 0.8 1</ambient>
+          <diffuse>0.2 0.2 0.2 1</diffuse>
+          <specular>0 0 0 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+      </visual>
+    </link>
+    <joint name='left_wheel_arc_segment_joint0' type='revolute'>
+      <child>left_wheel_arc_segment_link0</child>
+      <parent>stabilizer</parent>
+      <pose frame=''>0 0 -0.115 0 -0 0</pose>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <use_parent_model_frame>0</use_parent_model_frame>
+        <use_parent_model_frame>1</use_parent_model_frame>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name='left_wheel' filename='libContinuousTrack.so'>
+      <sprocket>
+        <joint>shaft_axle</joint>
+        <pitch_diameter>0.24</pitch_diameter>
+      </sprocket>
+      <trajectory>
+        <segment>
+          <joint>left_wheel_arc_segment_joint0</joint>
+          <end_position>6.28318530718</end_position>
+        </segment>
+      </trajectory>
+      <pattern>
+        <elements_per_round>8</elements_per_round>
+        <element>
+          <collision name='collision'>
+            <pose>0 0 0.03 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>0.005 0.2 0.07</size>
+              </box>
+            </geometry>
+            <surface>
+              <friction>
+                <ode>
+                  <mu>0.5</mu>
+                  <mu2>0.5</mu2>
+                </ode>
+              </friction>
+              <contact>
+                <ode>
+                  <min_depth>0.01</min_depth>
+                </ode>
+              </contact>
+            </surface>
+          </collision>
+          <visual name='visual'>
+            <pose>0 0 0.03 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>0.005 0.2 0.07</size>
+              </box>
+            </geometry>
+            <material>
+              <ambient>0.8 0.8 0.8 1</ambient>
+              <diffuse>0.2 0.2 0.2 1</diffuse>
+              <specular>0 0 0 1</specular>
+              <emissive>0 0 0 1</emissive>
+            </material>
+          </visual>
+        </element>
+      </pattern>
+    </plugin>
+    <link name='right_wheel_arc_segment_link0'>
+      <pose frame=''>0.25 -0.15 0.115 0 -0 0</pose>
+      <inertial>
+        <pose frame=''>0 0 -0.115 1.5708 -0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.000663958</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.000663958</iyy>
+          <iyz>0</iyz>
+          <izz>0.00066125</izz>
+        </inertia>
+      </inertial>
+      <collision name='collision'>
+        <pose frame=''>0 0 -0.115 1.5708 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.2</length>
+            <radius>0.115</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>0.5</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <min_depth>0.01</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='visual'>
+        <pose frame=''>0 0 -0.115 1.5708 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.2</length>
+            <radius>0.115</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.8 0.8 0.8 1</ambient>
+          <diffuse>0.2 0.2 0.2 1</diffuse>
+          <specular>0 0 0 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+      </visual>
+    </link>
+    <joint name='right_wheel_arc_segment_joint0' type='revolute'>
+      <child>right_wheel_arc_segment_link0</child>
+      <parent>stabilizer</parent>
+      <pose frame=''>0 0 -0.115 0 -0 0</pose>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <use_parent_model_frame>0</use_parent_model_frame>
+        <use_parent_model_frame>1</use_parent_model_frame>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+    <plugin name='right_wheel' filename='libContinuousTrack.so'>
+      <sprocket>
+        <joint>shaft_axle</joint>
+        <pitch_diameter>0.24</pitch_diameter>
+      </sprocket>
+      <trajectory>
+        <segment>
+          <joint>right_wheel_arc_segment_joint0</joint>
+          <end_position>6.28318530718</end_position>
+        </segment>
+      </trajectory>
+      <pattern>
+        <elements_per_round>8</elements_per_round>
+        <element>
+          <collision name='collision'>
+            <pose>0 0 0.03 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>0.005 0.2 0.07</size>
+              </box>
+            </geometry>
+            <surface>
+              <friction>
+                <ode>
+                  <mu>0.5</mu>
+                  <mu2>0.5</mu2>
+                </ode>
+              </friction>
+              <contact>
+                <ode>
+                  <min_depth>0.01</min_depth>
+                </ode>
+              </contact>
+            </surface>
+          </collision>
+          <visual name='visual'>
+            <pose>0 0 0.03 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>0.005 0.2 0.07</size>
+              </box>
+            </geometry>
+            <material>
+              <ambient>0.8 0.8 0.8 1</ambient>
+              <diffuse>0.2 0.2 0.2 1</diffuse>
+              <specular>0 0 0 1</specular>
+              <emissive>0 0 0 1</emissive>
+            </material>
+          </visual>
+        </element>
+      </pattern>
+    </plugin>
+    <static>0</static>
+    <plugin name='gazebo_ros_control' filename='libgazebo_ros_control.so'>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>false</legacyModeNS>
+    </plugin>
+  </model>
+</sdf>

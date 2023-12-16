@@ -1,0 +1,14 @@
+octomap:
+    pub_octomap_topic: "octomap_full_semantic"
+    pointcloud_topic: "/semantic_pcl/semantic_pcl"
+    tree_type: 0    # 0: color 1:semantic
+    world_frame_id: "/world"
+    resolution: 0.1
+    max_range: 8.0
+    raycast_range: 8.0
+    clamping_thres_min: 0.12
+    clamping_thres_max: 0.8
+    occupancy_thres: 0.7
+    prob_hit: 0.7
+    prob_miss: 0.4
+    save_path : "~/map.bt"

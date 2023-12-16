@@ -1,0 +1,33 @@
+<launch>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch" >
+        <arg name="paused" value="true"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+
+  <!-- Load robot description -->
+    <param name="robot_description" command="xacro --inorder '$(find gazebo_continuous_track_example)/urdf/swing_arm.urdf.xacro'" />
+
+    <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" output="screen" 
+        args="-urdf -param robot_description -model track_vehicle" />
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+        <param name="publish_frequency" type="double" value="30.0" />
+    </node>
+
+    <rosparam>
+        joint_state_controller:
+            type: joint_state_controller/JointStateController
+            publish_rate: 10
+        sprocket_velocity_controller:
+            type: velocity_controllers/JointVelocityController
+            joint: sprocket_axle
+    </rosparam>
+    <node name="cmd_relay" pkg="topic_tools" type="relay" args="/cmd_vel /sprocket_velocity_controller/command" output="screen" />
+    <!-- load and start the controllers -->
+    <node name="controller_starter" pkg="controller_manager" type="controller_manager" 
+            args="spawn joint_state_controller sprocket_velocity_controller" output="screen" />
+
+</launch>

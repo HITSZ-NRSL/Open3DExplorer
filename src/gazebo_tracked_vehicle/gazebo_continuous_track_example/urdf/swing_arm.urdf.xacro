@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro"  name="swing_arm">
+<xacro:macro name="swing_arm" params="mass offset_x">
+    <link name="arm_body">
+        <inertial>
+            <mass value="${mass}"/>
+            <inertia ixx="0.0250083333333" ixy="0" ixz="0" iyy="0.0241666666667" iyz="0" izz="0.0425083333333"/>
+        </inertial>
+        <visual>
+            <geometry>
+                <box size="0.375 0.18 0.11"/>
+            </geometry>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.375 0.18 0.11"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="arm_connector">
+        <inertial>
+            <mass value="0.2"/>
+            <!-- assuming axis of cylinder is y, not z -->
+            <inertia ixx="0.004655" ixy="0" ixz="0" iyy="0.00064" iyz="0" izz="0.004655"/>
+        </inertial>
+        <visual>
+            <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.25" radius="0.035"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.25" radius="0.035"/>
+            </geometry>
+        </collision>
+    </link>
+    <joint name="arm_connector_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.188 0 0"/>
+        <parent link="arm_connector"/>
+        <child link="arm_body"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <!-- sprocket driving the track : cylinder -->
+    <link name="sprocket">
+        <inertial>
+            <mass value="0.2"/>
+            <!-- assuming axis of cylinder is y, not z -->
+            <inertia ixx="0.004655" ixy="0" ixz="0" iyy="0.00064" iyz="0" izz="0.004655"/>
+        </inertial>
+        <visual>
+            <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.18" radius="0.055"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.18" radius="0.055"/>
+            </geometry>
+        </collision>
+    </link>
+    <joint name="sprocket_axle" type="continuous">
+        <origin rpy="0 0 0" xyz="0.188 0 0"/>
+        <parent link="arm_body"/>
+        <child link="sprocket"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <transmission name="arm_sprocket_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="sprocket_axle">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="sprocket_actuator">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <!-- idler on the other side of the sprocket: cylinder -->
+    <link name="idler">
+        <inertial>
+            <mass value="0.2"/>
+            <!-- assuming axis of cylinder is y, not z -->
+            <inertia ixx="0.004655" ixy="0" ixz="0" iyy="0.00064" iyz="0" izz="0.004655"/>
+        </inertial>
+        <visual>
+            <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.18" radius="0.055"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.18" radius="0.055"/>
+            </geometry>
+        </collision>
+    </link>
+    <joint name="idler_axle" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.188 0 0"/>
+        <parent link="arm_body"/>
+        <child link="idler"/>
+    </joint>
+    <gazebo reference="arm_body">
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="arm_connector">
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="sprocket">
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="idler">
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <!-- -->
+    <gazebo>
+        <link name="track_straight_segment_link0">
+            <pose>${offset_x-0.188-0.188} 0 0.055 0 0 0</pose>
+            <inertial>
+                <pose>0.188 0 -0.01 0 0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00219354166667</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00419354166667</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00616666666667</izz>
+                </inertia>
+            </inertial>
+            <collision name="collision">
+                <pose>0.188 0 -0.01 0 0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.376 0.178 0.02</size>
+                    </box>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <!-- <visual name="visual">
+                <pose>0.188 0 -0.01 0 0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.376 0.178 0.02</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual> -->
+        </link>
+    </gazebo>
+    <gazebo>
+        <link name="track_straight_segment_link1">
+            <pose>${offset_x-0.188+0.188} 0 -0.055 0 3.14159265359 0</pose>
+            <inertial>
+                <pose>0.188 0 -0.01 0 0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00219354166667</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00419354166667</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00616666666667</izz>
+                </inertia>
+            </inertial>
+            <collision name="collision">
+                <pose>0.188 0 -0.01 0 0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.376 0.178 0.02</size>
+                    </box>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <!-- <visual name="visual">
+                <pose>0.188 0 -0.01 0 0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.376 0.178 0.02</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual> -->
+        </link>
+    </gazebo>
+    <gazebo>
+        <joint name="track_straight_segment_joint0" type="prismatic">
+            <child>track_straight_segment_link0</child>
+            <parent>arm_body</parent>
+            <axis>
+                <xyz>1 0 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+    </gazebo>
+    <gazebo>
+        <joint name="track_straight_segment_joint1" type="prismatic">
+            <child>track_straight_segment_link1</child>
+            <parent>arm_body</parent>
+            <axis>
+                <xyz>1 0 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+    </gazebo>
+    <gazebo>
+        <link name="track_arc_segment_link0">
+            <pose>${offset_x-0.188+0.188} 0 0.055 0 0 0</pose>
+            <inertial>
+                <pose>0 0 -0.01 1.57079632679 0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00241395833333</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00241395833333</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00066125</izz>
+                </inertia>
+            </inertial>
+            <collision name="collision">
+                <pose>0 0 -0.055 1.57079632679 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.178</length>
+                        <radius>0.055</radius>
+                    </cylinder>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <!-- <visual name="visual">
+                <pose>0 0 -0.055 1.57079632679 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.178</length>
+                        <radius>0.055</radius>
+                    </cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual> -->
+        </link>
+    </gazebo>
+    <gazebo>
+        <link name="track_arc_segment_link1">
+            <pose>${offset_x-0.188-0.188} 0 -0.055 0 3.14159265359 0</pose>
+            <inertial>
+                <pose>0 0 -0.055 1.57079632679 0 0</pose>
+                <mass>0.1</mass>
+                <inertia>
+                    <ixx>0.00241395833333</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.00241395833333</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.00066125</izz>
+                </inertia>
+            </inertial>
+            <collision name="collision">
+                <pose>0 0 -0.055 1.57079632679 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.178</length>
+                        <radius>0.055</radius>
+                    </cylinder>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <min_depth>0.01</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <!-- <visual name="visual">
+                <pose>0 0 -0.055 1.57079632679 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <length>0.178</length>
+                        <radius>0.055</radius>
+                    </cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.1 0.1 0.3 1</ambient>
+                    <diffuse>0.2 0.2 0.2 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual> -->
+        </link>
+    </gazebo>
+    <gazebo>
+        <joint name="track_arc_segment_joint0" type="revolute">
+            <child>track_arc_segment_link0</child>
+            <parent>arm_body</parent>
+            <pose>0 0 -0.055 0 0 0</pose>
+            <axis>
+                <xyz>0 1 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+    </gazebo>
+    <gazebo>
+        <joint name="track_arc_segment_joint1" type="revolute">
+            <child>track_arc_segment_link1</child>
+            <parent>arm_body</parent>
+            <pose>0 0 -0.055 0 0 0</pose>
+            <axis>
+                <xyz>0 1 0</xyz>
+                <use_parent_model_frame>0</use_parent_model_frame>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
+    </gazebo>
+    <gazebo>
+        
+        <plugin filename="libContinuousTrack.so" name="arm_track">
+            <sprocket>
+                <joint>sprocket_axle</joint>
+                <pitch_diameter>0.130</pitch_diameter>
+            </sprocket>
+            <trajectory>
+                <segment>
+                    <joint>track_straight_segment_joint0</joint>
+                    <end_position>0.376</end_position>
+                </segment>
+                <segment>
+                    <joint>track_arc_segment_joint0</joint>
+                    <end_position>3.14159265359</end_position>
+                </segment>
+                <segment>
+                    <joint>track_straight_segment_joint1</joint>
+                    <end_position>0.376</end_position>
+                </segment>
+                <segment>
+                    <joint>track_arc_segment_joint1</joint>
+                    <end_position>3.14159265359</end_position>
+                </segment>
+            </trajectory>
+            <pattern>
+                <elements_per_round>20</elements_per_round>
+                <element>
+                    <collision name="collision">
+                        <pose>0 0 0 0 0 0</pose>
+                        <geometry>
+                            <box>
+                                <size>0.02 0.18 0.015</size>
+                            </box>
+                        </geometry>
+                        <surface>
+                            <friction>
+                                <ode>
+                                    <mu>0.5</mu>
+                                    <mu2>0.5</mu2>
+                                </ode>
+                            </friction>
+                            <contact>
+                                <ode>
+                                    <min_depth>0.01</min_depth>
+                                </ode>
+                            </contact>
+                        </surface>
+                    </collision>
+                    <visual name="visual">
+                        <pose>0 0 0 0 0 0</pose>
+                        <geometry>
+                            <box>
+                                <size>0.02 0.18 0.015</size>
+                            </box>
+                        </geometry>
+                        <material>
+                            <ambient>0.1 0.1 0.3 1</ambient>
+                            <diffuse>0.2 0.2 0.2 1</diffuse>
+                            <specular>0 0 0 1</specular>
+                            <emissive>0 0 0 1</emissive>
+                        </material>
+                    </visual>
+                </element>
+            </pattern>
+        </plugin>
+    </gazebo>
+    <!-- ros_control for gazebo -->
+    <!-- <gazebo>
+        <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+            <legacyModeNS>false</legacyModeNS>
+        </plugin>
+    </gazebo> -->
+
+</xacro:macro>
+</robot>

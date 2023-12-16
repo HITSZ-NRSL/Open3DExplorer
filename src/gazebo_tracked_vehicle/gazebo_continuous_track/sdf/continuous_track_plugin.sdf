@@ -1,0 +1,45 @@
+<!-- format definition for continuous track plugin -->
+<element name="plugin" required="1">
+    <description>the root tag</description>
+    <attribute name="name" type="string" default="__default__" required="1">
+        <description>the name of plugin instance</description>
+    </attribute>
+    <attribute name="filename" type="string" default="__default__" required="1">
+        <description>the library file of plugin. normally 'libContinuousTrack.so'</description>
+    </attribute>
+
+    <element name="sprocket" required="1">
+        <description>The sprocket which gives reference rotational speed for the track.</description>
+        <element name="joint" type="string" default="__default__" required="1">
+            <description>An existing rotational joint name</description>
+        </element>
+        <element name="pitch_diameter" type="double" default="1.0" required="1">
+            <description>The pitch diameter of sprocket</description>
+        </element>
+    </element>
+
+    <element name="trajectory" required="1">
+        <description>The trajectory (shape) of track</description>
+        <element name="segment" required="+">
+            <description>A segment of trajectory</description>
+            <element name="joint" type="string" default="__default__" required="1">
+                <description>An existing rotational or translational joint name. A trajectory segment is represented the trajectory of child link of this joint as moving the joint position from 0 to [end_position].</description>
+            </element>
+            <element name="end_position" type="double" default="1.0" required="1">
+                <description>The end position of joint. Must be positive.</description>
+            </element>
+        </element>
+    </element>
+
+    <element name="pattern" required="1">
+        <description>The pattern of track shoe</description>
+        <element name="elements_per_round" type="unsigned int" default="1" required="1">
+            <description>The number of elements on entire track. Must be positive. Each element is placed [perimeter_of_track] / [elements_per_round] apart.</description>
+        </element>
+        <element name="element" required="+">
+            <description>An element of track shoe</description>
+            <include filename="collision.sdf" required="*" />
+            <include filename="visual.sdf" required="*" />
+        </element>
+    </element>
+</element>

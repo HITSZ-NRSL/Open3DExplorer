@@ -1,0 +1,279 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- macros which expand to inertial/collision/visual -->
+
+    <xacro:macro name="make_cylinder_inertial" params="pose:=^|'0 0 0 0 0 0' mass:=^ length:=^ radius:=^">
+        <inertial>
+            <pose>${pose}</pose>
+            <mass>${mass}</mass>
+            <inertia>
+                <ixx>${mass * (radius * radius / 4 + length * length / 12)}</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>${mass * (radius * radius / 4 + length * length / 12)}</iyy>
+                <iyz>0</iyz>
+                <izz>${mass * radius * radius / 2}</izz>
+            </inertia>
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="make_cylinder_collision" params="name:='collision' pose:=^|'0 0 0 0 0 0' length:=^ radius:=^ mu:=^|0.5 min_depth:=^|0.01">
+        <collision name="${name}">
+            <pose>${pose}</pose>
+            <geometry>
+                <cylinder>
+                    <length>${length}</length>
+                    <radius>${radius}</radius>
+                </cylinder>
+            </geometry>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>${mu}</mu>
+                        <mu2>${mu}</mu2>
+                    </ode>
+                </friction>
+                <contact>
+                    <ode>
+                        <min_depth>${min_depth}</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </xacro:macro>
+
+    <xacro:macro name="make_cylinder_visual" params="name:='visual' pose:=^|'0 0 0 0 0 0' length:=^ radius:=^ *material">
+        <visual name="${name}">
+            <pose>${pose}</pose>
+            <geometry>
+                <cylinder>
+                    <length>${length}</length>
+                    <radius>${radius}</radius>
+                </cylinder>
+            </geometry>
+            <xacro:insert_block name="material" />
+        </visual>
+    </xacro:macro>
+
+    <xacro:macro name="make_box_inertial" params="pose:=^|'0 0 0 0 0 0' mass:=^ size_x:=^ size_y:=^ size_z:=^">
+        <inertial>
+            <pose>${pose}</pose>
+            <mass>${mass}</mass>
+            <inertia>
+                <ixx>${mass * (size_y * size_y + size_z * size_z) / 12}</ixx>
+                <ixy>0</ixy>
+                <ixz>0</ixz>
+                <iyy>${mass * (size_z * size_z + size_x * size_x) / 12}</iyy>
+                <iyz>0</iyz>
+                <izz>${mass * (size_x * size_x + size_y * size_y) / 12}</izz>
+            </inertia>
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="make_box_collision" params="name:='collision' pose:=^|'0 0 0 0 0 0' size:=^ mu:=^|0.5 min_depth:=^|0.01">
+        <collision name="${name}">
+            <pose>${pose}</pose>
+            <geometry>
+                <box>
+                    <size>${size}</size>
+                </box>
+            </geometry>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>${mu}</mu>
+                        <mu2>${mu}</mu2>
+                    </ode>
+                </friction>
+                <contact>
+                    <ode>
+                        <min_depth>${min_depth}</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </xacro:macro>
+
+    <xacro:macro name="make_box_visual" params="name:='visual' pose:=^|'0 0 0 0 0 0' size:=^ *material">
+        <visual name="${name}">
+            <pose>${pose}</pose>
+            <geometry>
+                <box>
+                    <size>${size}</size>
+                </box>
+            </geometry>
+            <xacro:insert_block name="material" />
+        </visual>
+    </xacro:macro>
+
+    <xacro:macro name="make_polyline_collision" params="name:='collision' pose:=^|'0 0 0 0 0 0' **polyline mu:=^|0.5 min_depth:=^|0.01">
+        <collision name="${name}">
+            <pose>${pose}</pose>
+            <geometry>
+                <polyline>
+                    <xacro:insert_block name="polyline" />
+                </polyline>
+            </geometry>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>${mu}</mu>
+                        <mu2>${mu}</mu2>
+                    </ode>
+                </friction>
+                <contact>
+                    <ode>
+                        <min_depth>${min_depth}</min_depth>
+                    </ode>
+                </contact>
+            </surface>
+        </collision>
+    </xacro:macro>
+
+    <xacro:macro name="make_polyline_visual" params="name:='visual' pose:=^|'0 0 0 0 0 0' **polyline *material">
+        <visual name="${name}">
+            <pose>${pose}</pose>
+            <geometry>
+                <polyline>
+                    <xacro:insert_block name="polyline" />
+                </polyline>
+            </geometry>
+            <xacro:insert_block name="material" />
+        </visual>
+    </xacro:macro>
+
+    <!-- macros which expand to box/polyline collision and visual. convenient when defining pattern elements on a track -->
+
+    <xacro:macro name="make_box_element" params="pose:=^|'0 0 0 0 0 0' size:=^ mu:=^|0.5 min_depth:=^|0.01 *material">
+        <xacro:make_box_collision />
+        <xacro:make_box_visual>
+            <xacro:insert_block name="material" />
+        </xacro:make_box_visual>
+    </xacro:macro>
+
+    <xacro:macro name="make_polyline_element" params="pose:=^|'0 0 0 0 0 0' **polyline mu:=^|0.5 min_depth:=^|0.01 *material">
+        <xacro:make_polyline_collision>
+            <polyline>
+                <xacro:insert_block name="polyline" />
+            </polyline>
+        </xacro:make_polyline_collision>
+        <xacro:make_polyline_visual>
+            <polyline>
+                <xacro:insert_block name="polyline" />
+            </polyline>
+            <xacro:insert_block name="material" />
+        </xacro:make_polyline_visual>
+    </xacro:macro>
+
+    <!-- macros for populating general links/joints -->
+
+    <xacro:macro name="populate_links" params="name_prefix:=^ x:=^|0 y:=^|0 z:=^|0 roll:=^|0 pitch:=^|0 yaw:=^|0 dx:=^|0 dy:=^|0 dz:=^|0 droll:=^|0 dpitch:=^|0 dyaw:=^|0 i:=0 count:=^ **template">
+        <xacro:if value="${i &lt; count}">
+            <gazebo>
+                <link name="${name_prefix}${i}">
+                    <pose>${x} ${y} ${z} ${roll} ${pitch} ${yaw}</pose>
+                    <xacro:insert_block name="template" />
+                </link>
+            </gazebo>
+            <xacro:populate_links x="${x+dx}" y="${y+dy}" z="${z+dz}" roll="${roll+droll}" pitch="${pitch+dpitch}" yaw="${yaw+dyaw}" i="${i+1}">
+                <template>
+                    <xacro:insert_block name="template" />
+                </template>
+            </xacro:populate_links>
+        </xacro:if>
+    </xacro:macro>
+
+    <xacro:macro name="populate_joints" params="name_prefix:=^ type:=^ child_prefix:=^ i:=0 count:=^ **template">
+        <xacro:if value="${i &lt; count}">
+            <gazebo>
+                <joint name="${name_prefix}${i}" type="${type}">
+                    <child>${child_prefix}${i}</child>
+                    <xacro:insert_block name="template" />
+                </joint>
+            </gazebo>
+            <xacro:populate_joints i="${i+1}">
+                <template>
+                    <xacro:insert_block name="template" />
+                </template>
+            </xacro:populate_joints>
+        </xacro:if>
+    </xacro:macro>
+
+    <!-- track segment templates which can be used with above population macros -->
+
+    <xacro:macro name="make_straight_segment_link_template" params="mass:=^ size_x:=^ size_y:=^ size_z:=^ mu:=^|0.5 min_depth:=^|0.01 *material">
+        <xacro:make_box_inertial pose="${size_x / 2} 0 ${-size_z / 2} 0 0 0" />
+        <xacro:make_box_collision pose="${size_x / 2} 0 ${-size_z / 2} 0 0 0" size="${size_x} ${size_y} ${size_z}" />
+        <xacro:make_box_visual pose="${size_x / 2} 0 ${-size_z / 2} 0 0 0" size="${size_x} ${size_y} ${size_z}">
+            <xacro:insert_block name="material" />
+        </xacro:make_box_visual>
+    </xacro:macro>
+
+    <xacro:macro name="make_straight_segment_joint_template" params="parent:=^ implicit_spring_damper:=^|1">
+        <parent>${parent}</parent>
+        <axis>
+            <xyz>1 0 0</xyz>
+            <use_parent_model_frame>0</use_parent_model_frame>
+        </axis>
+        <physics>
+            <ode>
+                <implicit_spring_damper>${implicit_spring_damper}</implicit_spring_damper>
+            </ode>
+        </physics>
+    </xacro:macro>
+
+    <xacro:macro name="make_arc_segment_link_template" params="mass:=^ length:=^ radius:=^ mu:=^|0.5 min_depth:=^|0.5 *material">
+        <xacro:make_cylinder_inertial pose="0 0 ${-radius} ${pi / 2} 0 0" />
+        <xacro:make_cylinder_collision pose="0 0 ${-radius} ${pi / 2} 0 0" />
+        <xacro:make_cylinder_visual pose="0 0 ${-radius} ${pi / 2} 0 0">
+            <xacro:insert_block name="material" />
+        </xacro:make_cylinder_visual>
+    </xacro:macro>
+
+    <xacro:macro name="make_arc_segment_joint_template" params="parent:=^ radius:=^ implicit_spring_damper:=^|1">
+        <parent>${parent}</parent>
+        <pose>0 0 ${-radius} 0 0 0</pose>
+        <axis>
+            <xyz>0 1 0</xyz>
+            <use_parent_model_frame>0</use_parent_model_frame>
+        </axis>
+        <physics>
+            <ode>
+                <implicit_spring_damper>${implicit_spring_damper}</implicit_spring_damper>
+            </ode>
+        </physics>
+    </xacro:macro>
+
+    <!-- macros for populating track segments with above population macros and above templates -->
+
+    <xacro:macro name="populate_straight_segments" params="name_prefix:=^ x:=^|0 y:=^|0 z:=^|0 roll:=^|0 pitch:=^|0 yaw:=^|0 dx:=^|0 dy:=^|0 dz:=^|0 droll:=^|0 dpitch:=^|0 dyaw:=^|0 mass:=^ size_x:=^ size_y:=^ size_z:=^ parent:=^ mu:=^|0.5 min_depth:=^|0.01 implicit_spring_damper:=^|1 *material count:=^">
+        <xacro:populate_links name_prefix="${name_prefix}_link">
+            <template>
+                <xacro:make_straight_segment_link_template>
+                    <xacro:insert_block name="material" />
+                </xacro:make_straight_segment_link_template>
+            </template>
+        </xacro:populate_links>
+        <xacro:populate_joints name_prefix="${name_prefix}_joint" type="prismatic" child_prefix="${name_prefix}_link">
+            <template>
+                <xacro:make_straight_segment_joint_template />
+            </template>
+        </xacro:populate_joints>
+    </xacro:macro>
+
+    <xacro:macro name="populate_arc_segments" params="name_prefix:=^ x:=^|0 y:=^|0 z:=^|0 roll:=^|0 pitch:=^|0 yaw:=^|0 dx:=^|0 dy:=^|0 dz:=^|0 droll:=^|0 dpitch:=^|0 dyaw:=^|0 mass:=^ length:=^ radius:=^ parent:=^ mu:=^|0.5 min_depth:=^|0.01 implicit_spring_damper:=^|1 *material count:=^">
+        <xacro:populate_links name_prefix="${name_prefix}_link">
+            <template>
+                <xacro:make_arc_segment_link_template>
+                    <xacro:insert_block name="material" />
+                </xacro:make_arc_segment_link_template>
+            </template>
+        </xacro:populate_links>
+        <xacro:populate_joints name_prefix="${name_prefix}_joint" type="revolute" child_prefix="${name_prefix}_link">
+            <template>
+                <xacro:make_arc_segment_joint_template />
+            </template>
+        </xacro:populate_joints>
+    </xacro:macro>
+
+</robot>

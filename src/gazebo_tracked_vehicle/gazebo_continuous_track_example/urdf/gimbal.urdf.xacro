@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.5.1-0-g916b5db  Build Version: 1.5.7152.31018
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="gimbal">
+  <xacro:include filename="$(find realsense_ros_gazebo)/xacro/tracker.xacro"/>
+  <xacro:include filename="$(find realsense_ros_gazebo)/xacro/depthcam.xacro"/>
+
+
+  <!-- <joint name="gimbal_joint_" type="fixed">
+      <origin xyz="0.0 0.0 0.64" rpy="0 0 1.5708"/>
+      <parent link="base_link"/>
+      <child link="gimbal_link"/>
+  </joint> -->
+  
+  <link
+    name="gimbal_link">
+    <inertial>
+      <origin
+        xyz="0.000434 0.00012166 0.0056729"
+        rpy="0 0 0" />
+      <mass
+        value="0.012717" />
+      <inertia
+        ixx="1.6406E-06"
+        ixy="1.7066E-10"
+        ixz="3.4587E-11"
+        iyy="1.6487E-06"
+        iyz="6.9013E-11"
+        izz="3.0466E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://gazebo_continuous_track_example/meshes/gimbal_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+  </link>
+  <link
+    name="gimbal_y_link">
+    <inertial>
+      <origin
+        xyz="0.011007 -0.0016306 0.020198"
+        rpy="0 0 0" />
+      <mass
+        value="0.0061357" />
+      <inertia
+        ixx="2.3364E-06"
+        ixy="1.2116E-07"
+        ixz="-1.0996E-06"
+        iyy="3.1363E-06"
+        iyz="1.6289E-07"
+        izz="1.6753E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://gazebo_continuous_track_example/meshes/gimbal_y_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+  </link>
+  <joint
+    name="gimbal_y_joint"
+    type="revolute">
+    <origin
+      xyz="0.00035623 0.00035088 0.0121"
+      rpy="0 0 0.18" />
+    <parent
+      link="gimbal_link" />
+    <child
+      link="gimbal_y_link" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-1000"
+      upper="1000"
+      effort="15"
+      velocity="20" />
+  </joint>
+  <link
+    name="gimbal_r_link">
+    <inertial>
+      <origin
+        xyz="-0.013874 -0.015984 0.0010653"
+        rpy="0 0 0" />
+      <mass
+        value="0.034025" />
+      <inertia
+        ixx="5.4069E-06"
+        ixy="-1.9382E-06"
+        ixz="1.3472E-07"
+        iyy="5.5032E-06"
+        iyz="1.4803E-07"
+        izz="7.7128E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://gazebo_continuous_track_example/meshes/gimbal_r_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+  </link>
+  <joint
+    name="gimbal_r_joint"
+    type="fixed">
+    <origin
+      xyz="0.027698 0.0013607 0.0565"
+      rpy="0.0 0 0" />
+    <parent
+      link="gimbal_y_link" />
+    <child
+      link="gimbal_r_link" />
+    <axis
+      xyz="0.99882 0.048597 0" />
+  </joint>
+  <link
+    name="gimbal_p_link">
+    <inertial>
+      <origin
+        xyz="0.0085569 0.034636 -0.014004"
+        rpy="0 0 0" />
+      <mass
+        value="0.011655" />
+      <inertia
+        ixx="8.1984E-06"
+        ixy="-1.2158E-06"
+        ixz="1.8015E-07"
+        iyy="1.1412E-06"
+        iyz="1.1918E-06"
+        izz="8.6005E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://gazebo_continuous_track_example/meshes/gimbal_p_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+  </link>
+  <joint
+    name="gimbal_p_joint"
+    type="revolute">
+    <origin
+      xyz="-0.040574 -0.014575 0.0012157"
+      rpy="0 0 0" />
+      <!-- 0 -0.8 0 -->
+    <parent
+      link="gimbal_r_link" />
+    <child
+      link="gimbal_p_link" />
+    <axis
+      xyz="0 -1 0" />
+    <limit
+      lower="-1.5708"
+      upper="1.5708"
+      effort="15"
+      velocity="20" />
+  </joint>
+ 
+  <joint name="gps_base_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 3.0" />
+    <parent link="gimbal_link" />
+    <child link="gps_base_link" />
+  </joint>
+  <link name="gps_base_link"/>
+
+  <!-- <xacro:realsense_d435 sensor_name="camera" parent_link="base_link" rate="30">
+    <origin rpy="0 0.0 -1.5708 " xyz="0.0 -0.5 0.5"/>
+  </xacro:realsense_d435> -->
+
+  <xacro:realsense_d435 sensor_name="camera" parent_link="gimbal_p_link" rate="30">
+    <origin rpy="0 0.0 3" xyz="0.01 0.05 -0.01"/>
+  </xacro:realsense_d435>
+
+  <transmission name="tran10">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="gimbal_p_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor10">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran11">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="gimbal_y_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor11">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <gazebo reference="camera_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>200</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>camera_imu</topicName>
+        <bodyName>camera_link</bodyName>
+        <updateRateHZ>200.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>camera_color_optical_frame</frameName>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>50.0</updateRate>
+      <bodyName>gps_camera_link</bodyName>
+      <topicName>ground_truth/camera_state</topicName>
+      <gaussianNoise>0.01</gaussianNoise>
+      <frameName>world</frameName>
+    </plugin>
+  </gazebo>
+
+</robot>

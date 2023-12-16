@@ -1,0 +1,85 @@
+# Publish all joint states -----------------------------------
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 20  
+
+joint10_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: gimbal_p_joint
+  pid: {p: 1 , i: 0.01, d: 1.0, i_clamp_max: 1.0}
+
+joint11_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: gimbal_y_joint
+  pid: {p: 1 , i: 0.01, d: 1.0, i_clamp_max: 1.0}
+
+# # Position Controllers ---------------------------------------
+# joint1_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: left_joint1
+#   pid: {p: 100000000 , i: 0.01, d: 1.0}
+
+# joint2_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: left_joint2
+#   pid: {p: 100000000 , i: 0.01, d: 1.0}
+
+# joint3_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: left_joint3
+#   pid: {p: 100000000 , i: 0.01, d: 1.0}
+
+# joint4_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: left_joint4
+#   pid: {p: 100000000, i: 0.01, d: 1.0}
+
+# joint5_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: right_joint1
+#   pid: {p: 100000000 , i: 0.01, d: 1.0}
+
+# joint6_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: right_joint2
+#   pid: {p: 100000000 , i: 0.01, d: 1.0}
+
+# joint7_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: right_joint3
+#   pid: {p: 100000000 , i: 0.01, d: 1.0}
+
+# joint8_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: right_joint4
+#   pid: {p: 100000000 , i: 0.01, d: 1.0}
+
+
+# joint7_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: gimbal_r_joint
+#   pid: {p: 100000000, i: 0.01, d: 1.0}
+
+# joint8_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: gimbal_p_joint
+#   pid: {p: 100000000 , i: 0.01, d: 1.0}
+
+# joint9_velocity_controller:
+#   type: velocity_controllers/JointVelocityController
+#   joint: gimbal_y_joint
+#   pid: {p: 100000000 , i: 0.01, d: 1.0}
+
+
+# /gazebo_ros_control/pid_gains:
+#   left_joint1: {p: 10.0,i: 0.2, d: 0.5}
+#   left_joint2: {p: 10.0,i: 0.2, d: 0.5}
+#   left_joint3: {p: 10.0,i: 0.2, d: 0.5}
+#   left_joint4: {p: 10.0,i: 0.2, d: 0.5}
+#   right_joint1: {p: 10.0,i: 0.2, d: 0.5}
+#   right_joint2: {p: 10.0,i: 0.2, d: 0.5}
+#   right_joint3: {p: 10.0,i: 0.2, d: 0.5}
+#   right_joint4: {p: 10.0,i: 0.2, d: 0.5}
+  # gimbal_r_joint: {p: 10.0,i: 0.2, d: 0.5}
+  # gimbal_p_joint: {p: 10.0,i: 0.2, d: 0.5}
+  # gimbal_y_joint: {p: 10.0,i: 0.2, d: 0.5}

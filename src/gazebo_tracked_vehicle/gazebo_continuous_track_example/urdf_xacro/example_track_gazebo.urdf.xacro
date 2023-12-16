@@ -1,0 +1,52 @@
+<robot name="example_track" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- -->
+
+    <xacro:include filename="$(find gazebo_continuous_track)/urdf_xacro/macros_track_gazebo.urdf.xacro" />
+    <xacro:include filename="example_track.urdf.xacro" />
+
+    <!-- -->
+
+    <xacro:property name="track_material">
+        <material>
+            <ambient>0.1 0.1 0.3 1</ambient>
+            <diffuse>0.2 0.2 0.2 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+        </material>
+    </xacro:property>
+
+    <xacro:make_track name="track" mass="0.4" length="0.7" radius="0.115" width="0.5" parent="body" sprocket_joint="sprocket_axle" pitch_diameter="0.24">
+        <xacro:insert_block name="track_material" />
+        <pattern>
+            <elements_per_round>40</elements_per_round>
+            <element>
+                <xacro:make_box_element pose="0 0 0 0 0 0" size="0.02 0.5 0.02">
+                    <xacro:insert_block name="track_material" />
+                </xacro:make_box_element>
+            </element>
+            <element>
+                <xacro:make_polyline_element pose="0 0.25 0 ${pi / 2} 0 0">
+                    <polyline>
+                        <point>-0.02 -0.01</point>
+                        <point>-0.01 0.01</point>
+                        <point>0.01 0.01</point>
+                        <point>0.02 -0.01</point>
+                        <height>0.5</height>
+                    </polyline>
+                    <xacro:insert_block name="track_material" />
+                </xacro:make_polyline_element>
+            </element>
+        </pattern>
+    </xacro:make_track>
+
+    <!-- ros_control for gazebo -->
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+            <legacyModeNS>false</legacyModeNS>
+        </plugin>
+    </gazebo>
+
+</robot>

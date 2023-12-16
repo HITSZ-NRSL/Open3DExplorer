@@ -1,0 +1,16 @@
+build/
+devel/
+logs/
+.catkin_tools/
+.vscode/
+**/.vscode/
+**/.idea/
+src/semantic_slam/ORB_SLAM2/build/
+launch_sim.md
+# src/mpc_tracker/
+# src/cpr_gazebo/
+# src/gazebo_tracked_vehicle/
+# src/plt1000_base/
+# src/realsense_gazebo_plugin/
+# src/realsense_ros_gazebo/
+# src/semantic_slam/

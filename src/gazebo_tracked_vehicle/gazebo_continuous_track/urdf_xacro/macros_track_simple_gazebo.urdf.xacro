@@ -1,0 +1,83 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!--                                                                                              -->
+    <!-- macros for making simple track                                                               -->
+    <!--     * useful when difining entities for ContinuousTrackSimple plugin                         -->
+    <!--     * see gazebo_continuous_track_example/urdf/example_track_simple.urdf.xacro to know usage -->
+    <!--                                                                                              -->
+
+    <xacro:include filename="macros_common_gazebo.urdf.xacro" />
+
+    <!-- macro which expands to simple plugin definition -->
+
+    <xacro:macro name="make_track_simple_plugin" params="name sprocket_joint:=^ pitch_diameter:=^">
+        <gazebo>
+            <plugin name="${name}" filename="libContinuousTrackSimple.so">
+                <sprocket>
+                    <joint>${sprocket_joint}</joint>
+                    <pitch_diameter>${pitch_diameter}</pitch_diameter>
+                </sprocket>
+                <track>
+                    <segment>
+                        <joint>${name}_straight_segment_joint0</joint>
+                    </segment>
+                    <segment>
+                        <joint>${name}_arc_segment_joint0</joint>
+                        <pitch_diameter>${pitch_diameter}</pitch_diameter>
+                    </segment>
+                    <segment>
+                        <joint>${name}_straight_segment_joint1</joint>
+                    </segment>
+                    <segment>
+                        <joint>${name}_arc_segment_joint1</joint>
+                        <pitch_diameter>${pitch_diameter}</pitch_diameter>
+                    </segment>
+                </track>
+            </plugin>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:macro name="populate_arc_segments_for_simple_plugin" params="name_prefix:=^ pitch_diameter:=^ i:=0 count=^">
+        <xacro:if value="${i &lt; count}">
+            <segment>
+                <joint>${name_prefix}${i}</joint>
+                <pitch_diameter>${pitch_diameter}</pitch_diameter>
+            </segment>
+            <xacro:populate_arc_segments_for_simple_plugin i="${i + 1}" />
+        </xacro:if>
+    </xacro:macro>
+
+    <xacro:macro name="make_track_simple_plugin_wheels" params="name sprocket_joint:=^ pitch_diameter:=^ count:=^">
+        <gazebo>
+            <plugin name="${name}" filename="libContinuousTrackSimple.so">
+                <sprocket>
+                    <joint>${sprocket_joint}</joint>
+                    <pitch_diameter>${pitch_diameter}</pitch_diameter>
+                </sprocket>
+                <track>
+                    <xacro:populate_arc_segments_for_simple_plugin name_prefix="${name}_wheel_joint" />
+                </track>
+            </plugin>
+        </gazebo>
+    </xacro:macro>
+
+    <!-- main entry point: macro for making oval track by ContinuousTrackSimple plugin -->
+
+    <xacro:macro name="make_track_simple" params="name x:=^|0 y:=^|0 z:=^|0 roll:=^|0 pitch:=^|0 yaw:=^|0 mass:=^ length:=^ radius:=^ width:=^ parent:=^ sprocket_joint:=^ pitch_diameter:=^ mu:=^|0.5 min_depth:=^|0.01 implicit_spring_damper:=^|1 *material">
+        <xacro:populate_straight_segments name_prefix="${name}_straight_segment" x="${x - length / 2}" z="${z + radius}" dx="${length}" dz="${-2 * radius}" dpitch="${pi}" mass="${mass / 4}" size_x="${length}" size_y="${width}" size_z="${radius}" count="2">
+            <xacro:insert_block name="material" />
+        </xacro:populate_straight_segments>
+        <xacro:populate_arc_segments name_prefix="${name}_arc_segment" x="${x + length / 2}" z="${z + radius}" dx="${-length}" dz="${-2 * radius}" dpitch="${pi}" mass="${mass / 4}" length="${width}" count="2">
+            <xacro:insert_block name="material" />
+        </xacro:populate_arc_segments>
+        <xacro:make_track_simple_plugin name="${name}" />
+    </xacro:macro>
+
+    <xacro:macro name="make_track_simple_wheels" params="name x:=^|0 y:=^|0 z:=^|0 roll:=^|0 pitch:=^|0 yaw:=^|0 mass:=^ length:=^ radius:=^ width:=^ parent:=^ sprocket_joint:=^ pitch_diameter:=^ mu:=^|0.5 min_depth:=^|0.01 implicit_spring_damper:=^|1 *material count:=^">
+        <xacro:populate_arc_segments name_prefix="${name}_wheel" x="${x + length / 2}"  z="${z + radius}" dx="${-length / (count - 1)}" mass="${mass / count}" length="${width}">
+            <xacro:insert_block name="material" />
+        </xacro:populate_arc_segments>
+        <xacro:make_track_simple_plugin_wheels name="${name}" />
+    </xacro:macro>
+
+</robot>

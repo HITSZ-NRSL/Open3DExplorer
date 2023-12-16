@@ -1,0 +1,33 @@
+<!-- format definition for continuous track simple plugin -->
+<element name="plugin" required="1">
+    <description>the root tag</description>
+    <attribute name="name" type="string" default="__default__" required="1">
+        <description>the name of plugin instance</description>
+    </attribute>
+    <attribute name="filename" type="string" default="__default__" required="1">
+        <description>the library file of plugin. normally 'libContinuousTrackSimple.so'</description>
+    </attribute>
+
+    <element name="sprocket" required="1">
+        <description>The sprocket which gives reference rotational speed for the track.</description>
+        <element name="joint" type="string" default="__default__" required="1">
+            <description>An existing rotational joint name</description>
+        </element>
+        <element name="pitch_diameter" type="double" default="1.0" required="1">
+            <description>The pitch diameter of sprocket</description>
+        </element>
+    </element>
+
+    <element name="track" required="1">
+        <description>The track which moves on the basis of the reference sprocket speed</description>
+        <element name="segment" required="+">
+            <description>A segment of track</description>
+            <element name="joint" type="string" default="__default__" required="1">
+                <description>An existing rotational or translational joint name. The plugin sets the joint speed to [sprocket_speed] * [sprocket_pitch_diameter] / [joint_pitch_diameter] if the joint is rotational, or [sprocket_pitch_diameter] * [sprocket_pitch_diameter] / 2 if translational</description>
+            </element>
+            <element name="pitch_diameter" type="double" default="1.0" required="0">
+                <description>The pitch diameter of joint. Required when the joint is rotational.</description>
+            </element>
+        </element>
+    </element>
+</element>

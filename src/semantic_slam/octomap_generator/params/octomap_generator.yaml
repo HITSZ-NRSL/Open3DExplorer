@@ -1,0 +1,17 @@
+octomap:
+    pub_octomap_topic: "octomap_full"
+    # pointcloud_topic: "/semantic_pcl/semantic_pcl"
+    pointcloud_topic: "/camera/depth/color/points"
+    tree_type: 0
+    world_frame_id: "/world"
+    resolution: 0.4
+    # max_range: 11.5
+    # raycast_range: 10.5
+    max_range: 10
+    raycast_range: 10    # 动态更新范围
+    clamping_thres_min: 0.12
+    clamping_thres_max: 0.97
+    occupancy_thres: 0.5
+    prob_hit: 0.7
+    prob_miss: 0.4
+    save_path : "/home/hitwzh/semantic_slam_ws/src/map/map.bt"

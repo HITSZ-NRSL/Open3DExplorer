@@ -1,0 +1,4 @@
+<launch>
+  <!-- ORB_SLAM2 RGBD -->
+  <node pkg="orb_slam2" type="rgbd" name="rgbd" output="screen" args="$(find orb_slam2)../../../Vocabulary/ORBvoc.bin $(find semantic_slam)/params/gazebo_d435.yaml"/>
+</launch>

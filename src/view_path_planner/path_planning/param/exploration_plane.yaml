@@ -1,0 +1,30 @@
+# plane reconstruction
+buffer_strategy: true
+maze_mode: false
+terrain_mode: false
+
+map_2d/fsmi_range: 8
+map_2d/weight_direction: 0
+map_2d/weight_distance: 0.05
+map_2d/visualize_fpsize: 0.4
+map_2d/thresh_toexplore: -150
+map_2d/thresh_endexplore: 140
+
+rrt_3d/step_size_position: 0.8
+rrt_3d/step_size_orientation: 0.2
+rrt_3d/featureless_detect_range: 2
+rrt_3d/unknown_detect_range: 2
+rrt_3d/nearwall_detect_range: 2
+rrt_3d/fsmi_range: 5
+
+# small city: using gazebo feedback
+explore_range_blx: -17.0
+explore_range_urx: 33.0
+explore_range_bly: 10.0
+explore_range_ury: -25.0
+
+# unlimited
+# explore_range_blx: -200.0
+# explore_range_bly: 200.0
+# explore_range_urx: 200.0
+# explore_range_ury: -200.0

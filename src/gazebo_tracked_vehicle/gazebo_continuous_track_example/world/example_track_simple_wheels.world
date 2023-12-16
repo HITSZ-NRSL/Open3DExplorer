@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+    <world name="default">
+        <include>
+            <uri>model://ground_plane</uri>
+        </include>
+
+        <!-- Global light source -->
+        <include>
+            <uri>model://sun</uri>
+        </include>
+
+        <!-- Example track -->
+        <include>
+            <uri>model://example_track_simple_wheels</uri>
+            <pose>0 0 0.3 0 0 0</pose>
+        </include>
+
+        <!-- Rigid anchor for the track -->
+        <!-->
+        <model name="anchor">
+            <joint name="world_to_track" type="fixed">
+                <parent>world</parent>
+                <child>example_track_simple_wheels::body</child>
+            </joint>
+        </model>
+        <!-->
+
+        <!-- camera angle -->
+        <gui fullscreen='0'>
+            <camera name='user_camera'>
+                <pose>2.0 -1.5 1.0 0.0 0.3 2.45</pose>
+                <view_controller>orbit</view_controller>
+            </camera>
+        </gui>
+    </world>
+</sdf>

@@ -1,0 +1,43 @@
+<launch>
+
+    <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+    <arg name="paused" default="true" />
+    <arg name="use_sim_time" default="true" />
+    <arg name="gui" default="true" />
+    <arg name="headless" default="false" />
+    <arg name="debug" default="false" />
+
+    <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find gazebo_continuous_track_example)/world/example_lugged_wheel.world" />
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)" />
+        <arg name="use_sim_time" value="$(arg use_sim_time)" />
+        <arg name="headless" value="$(arg headless)" />
+    </include>
+
+    <group ns="example_lugged_wheel">
+
+        <!-- Load the URDF into the ROS Parameter Server -->
+        <param name="robot_description" command="xacro --inorder '$(find gazebo_continuous_track_example)/urdf_xacro/example_lugged_wheel.urdf.xacro'" />
+
+        <rosparam>
+            joint_state_controller:
+                type: joint_state_controller/JointStateController
+                publish_rate: 10
+            shaft_velocity_controller:
+                type: velocity_controllers/JointVelocityController
+                joint: shaft_axle
+        </rosparam>
+
+        <!-- load and start the controllers -->
+        <node name="controller_starter" pkg="controller_manager" type="controller_manager" args="spawn joint_state_controller shaft_velocity_controller" output="screen" />
+
+        <!-- convert joint states to TF transforms for rviz, etc -->
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+            <param name="tf_prefix" value="example_lugged_wheel" />
+        </node>
+    </group>
+
+</launch>

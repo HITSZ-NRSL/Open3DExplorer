@@ -1,0 +1,27 @@
+<launch>
+
+  <!-- mpc for trajectory following -->
+  <node pkg="mpc_tracker" type="mpc_tracker" name="mpc_tracker" output="screen">
+  </node>
+
+  <!-- <include file="$(find publish_pointcloud)/launch/demo.launch" /> -->
+
+  <!-- <node pkg="rviz" type="rviz" name="rviz_path_tracker" args="-d $(find mpc_tracker)/path_track.rviz"/> -->
+
+  <group ns="weights">  
+    <param name="max_v" type="double" value="1.0" />
+    <param name="max_w_base" type="double" value="1.0" />
+    <param name="max_w_cam" type="double" value="1.0" />  
+
+    <param name="w_error_x" type="double" value="1.0" />
+    <param name="w_error_y" type="double" value="1.0" />
+    <param name="w_error_theta" type="double" value="1.0" />
+    <param name="w_error_pitch" type="double" value="1.0" />
+    <param name="w_relate_rot_base_cam" type="double" value="1.0" />
+    <param name="w_cost_v" type="double" value="2.0" />
+    <param name="w_cost_w_cam_inw" type="double" value="3.0" />      
+    <param name="w_cost_pitch" type="double" value="3.0" />      
+  </group>
+    
+</launch>
+  
