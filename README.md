@@ -7,7 +7,7 @@ This work **Open3DExplorer** is oriented to the rapid autonomous reconstruction 
 
 Authors: [Zhihao Wang](https://github.com/nixwang), [Haoyao Chen](https://github.com/HitszChen) from the [Networked RObotics and Sytems Lab](http://www.nrs-lab.com), and Mengmeng Fu.
 
-If you use **Open3DExplorer** for your academic research, please cite the following paper. 
+If you use **Open3DExplorer** for your academic research, please cite the following paper [[pdf]([https://ieeexplore.ieee.org/document/10129820](https://onlinelibrary.wiley.com/doi/epdf/10.1002/rob.22281))]. 
 ```
 @ARTICLE{wang_whole_2023,
   author={Wang, Zhihao and Chen, Haoyao and Fu, Mengmeng},
@@ -37,7 +37,7 @@ Tested on Ubuntu 18.04.
 
 - Install ROS packages
 ```
-sudo apt-get install ros-$(rosversion)-octomap-ros ros-$(rosversion)-octomap-msgs ros-$(rosversion)-yocs-cmd-vel-mux ros-$(rosversion)-pcl-ros
+sudo apt-get install ros-(rosversion)−octomap−rosros−(rosversion)-octomap-ros ros-(rosversion)-octomap-msgs ros-(rosversion)−yocs−cmd−vel−muxros−(rosversion)-yocs-cmd-vel-mux ros-(rosversion)-pcl-ros
 ```
 - Create a conda environment {YOUR_ENV_NAME} with python3 (python3.6 in my computer) and install below packages, the version of these packages are adapted to yourself cuda version.
 ```
@@ -91,6 +91,7 @@ roslaunch mpc_tracker mpc_test.launch
 
 ## 4. Acknowledgments
  Semantic SLAM in **Open3DExplorer** is based on [Semantic SLAM](https://github.com/floatlazer/semantic_slam).
+ This work was supported in part by National Natural Science Foundation of China and Shenzhen Science and Innovation Committee.
 
 ## LICENSE
 The source code is released under GPLv2 license.
